@@ -1,4 +1,5 @@
 ﻿@page "/tests/datagrid/data/in-memory"
+ <Button Color="Color.Primary" Clicked="ShowCounter">Show</Button>
 <Row>
     <Column>
         <Card Margin="Margin.Is4.OnY">
@@ -53,12 +54,22 @@
 @code {
 
     [Inject] EmployeeData EmployeeData { get; set; }
-
+    [Inject] public IModalService ModalService { get; set; }
     private IEnumerable<Employee> inMemoryData;
 
     protected override async Task OnInitializedAsync()
     {
         inMemoryData = ( await EmployeeData.GetDataAsync().ConfigureAwait( false ) ).Take( 25 );
         await base.OnInitializedAsync();
+    }
+    public Task ShowCounter()
+    {
+        Random random = new();
+        var newValue = random.NextInt64( 100 );
+        return ModalService.Show<Counter>( "My Custom Content!", x => x.Add( x => x.Value, newValue ),
+            new ModalInstanceOptions()
+            {
+                Size = ModalSize.Fullscreen
+            } );
     }
 }

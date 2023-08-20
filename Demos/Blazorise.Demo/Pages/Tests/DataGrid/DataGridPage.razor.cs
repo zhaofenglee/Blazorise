@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blazorise.DataGrid;
 using Blazorise.DataGrid.Utils;
+using Blazorise.Demo.Components;
 using Blazorise.Shared.Data;
 using Blazorise.Shared.Models;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +16,7 @@ namespace Blazorise.Demo.Pages.Tests.DataGrid;
 public partial class DataGridPage
 {
     #region Members
-
+    [Inject] public IModalService ModalService { get; set; }
     private Employee editModel = new();
 
     private DataGridEditMode editMode = DataGridEditMode.Form;
@@ -309,4 +310,15 @@ public partial class DataGridPage
     }
 
     #endregion
+    
+    public Task ShowCounter()
+    {
+        Random random = new();
+        var newValue = random.NextInt64( 100 );
+        return ModalService.Show<Counter>( "My Custom Content!", x => x.Add( x => x.Value, newValue ),
+            new ModalInstanceOptions()
+            {
+                Size = ModalSize.Fullscreen
+            } );
+    }
 }
